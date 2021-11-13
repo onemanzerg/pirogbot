@@ -9,9 +9,9 @@ from aiogram.utils import executor
 bot = Bot(token=tg_bot_token)
 dp = Dispatcher(bot)
 
-@dp.message_handler(commands=["start"])
+@dp.message_handler(commands=["weather"])
 async def start_command(message: types.Message):
-    await message.reply("Здарова, ебать!1 Напиши название города, и я пришлю сводку погоды.")
+    await message.answer("Здарова! Напиши название города, и я пришлю сводку погоды.")
 
 @dp.message_handler()
 async def get_weather(message: types.Message):
@@ -34,31 +34,30 @@ async def get_weather(message: types.Message):
 
         # достаем параметры из json ответа на запрос
         city = data["name"]
-        cur_weather = data["main"]["temp"]
+        cur_weather = int(data["main"]["temp"])
 
         weather_description = data["weather"][0]["main"]
         if weather_description in code_to_smile:
             wd = code_to_smile[weather_description]
         else:
-            wd = "Посмотри в окно сам, я хз что это такое!"
+            wd = "Посмотри в окно сам, я хз, что это такое!"
 
         humidity = data["main"]["humidity"]
-        pressure = data["main"]["pressure"]
+        pressure = int(data["main"]["pressure"] * 0.750064)
         wind = data["wind"]["speed"]
         sunrise_timestamp = datetime.datetime.fromtimestamp(data["sys"]["sunrise"])
         sunset_timestamp = datetime.datetime.fromtimestamp(data["sys"]["sunset"])
         lenght_of_the_day = datetime.datetime.fromtimestamp(data["sys"]["sunset"]) - datetime.datetime.fromtimestamp(
             data["sys"]["sunrise"])
 
-        await message.reply(f"***{datetime.datetime.now().strftime('%Y-%m-%d %H:%M')}***\n"
+        await message.answer(f"***** {datetime.datetime.now().strftime('%Y-%m-%d %H:%M')} *****\n"
               f"Погода в городе: {city}\nТемпература: {cur_weather} C° {wd}\n"
-              f"Влажность: {humidity} %\nДавление: {pressure} мбар (я пока хуй знает, как вывести в мм. рт. ст.)\nВетер: {wind} м/с\n"
+              f"Влажность: {humidity} %\nДавление: {pressure} мм.рт.ст.\nВетер: {wind} м/с\n"
               f"Восход солнца: {sunrise_timestamp}\nЗакат солнца: {sunset_timestamp}\nПродолжительность дня: {lenght_of_the_day}\n"
-              f"\o\o\o Дико например! \o\o\o"
               )
 
     except:
-        await message.reply("\U00002620 Нет такого города, браток! Соси бибу! \U00002620")
+        await message.answer("\U00002620 Нет такого города, браток! Соси бибу! \U00002620")
 
 
 if __name__ == '__main__':

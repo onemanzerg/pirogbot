@@ -26,7 +26,7 @@ def get_weather(city, open_weather_token):
 
         # достаем параметры из json ответа на запрос
         city = data["name"]
-        cur_weather = data["main"]["temp"]
+        cur_weather = int(data["main"]["temp"])
 
         weather_description = data["weather"][0]["main"]
         if weather_description in code_to_smile:
@@ -35,18 +35,17 @@ def get_weather(city, open_weather_token):
             wd = "Посмотри в окно сам, я хз что это такое!"
 
         humidity = data["main"]["humidity"]
-        pressure = data["main"]["pressure"]
+        pressure = int(data["main"]["pressure"] * 0.750064)
         wind = data["wind"]["speed"]
         sunrise_timestamp = datetime.datetime.fromtimestamp(data["sys"]["sunrise"])
         sunset_timestamp = datetime.datetime.fromtimestamp(data["sys"]["sunset"])
         lenght_of_the_day = datetime.datetime.fromtimestamp(data["sys"]["sunset"]) - datetime.datetime.fromtimestamp(
             data["sys"]["sunrise"])
 
-        print(f"***{datetime.datetime.now().strftime('%Y-%m-%d %H:%M')}***\n"
+        print(f"***** {datetime.datetime.now().strftime('%Y-%m-%d %H:%M')} *****\n"
               f"Погода в городе: {city}\nТемпература: {cur_weather} C° {wd}\n"
-              f"Влажность: {humidity} %\nДавление: {pressure} мбар (я пока хуй знает, как вывести в мм. рт. ст.)\nВетер: {wind} м/с\n"
+              f"Влажность: {humidity} %\nДавление: {pressure} мм.рт.ст.\nВетер: {wind} м/с\n"
               f"Восход солнца: {sunrise_timestamp}\nЗакат солнца: {sunset_timestamp}\nПродолжительность дня: {lenght_of_the_day}\n"
-              f"Дико!"
               )
 
     except Exception as ex:
